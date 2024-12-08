@@ -1,0 +1,119 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+
+public class BankingApplicationGUI extends BankingApplication {
+
+    private BankAccount bank1;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        bank1 = new BankAccount("TreyD", "001");
+
+        primaryStage.setTitle("Banking Application");
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20, 20, 20, 20));
+        grid.setVgap(8);
+        grid.setHgap(10);
+
+        Label nameLabel = new Label("Welcome " + bank1.customerName);
+        GridPane.setConstraints(nameLabel, 0, 0);
+
+        Label idLabel = new Label("Your ID is: " + bank1.customerId);
+        GridPane.setConstraints(idLabel, 0, 1);
+
+        Button checkBalanceButton = new Button("Check Balance");
+        GridPane.setConstraints(checkBalanceButton, 0, 2);
+        checkBalanceButton.setOnAction(e -> {
+            showBalance();
+        });
+
+        Button depositButton = new Button("Deposit");
+        GridPane.setConstraints(depositButton, 0, 3);
+        depositButton.setOnAction(e -> {
+            // Show deposit dialog
+            // Implement this
+        });
+
+        Button withdrawButton = new Button("Withdraw");
+        GridPane.setConstraints(withdrawButton, 0, 4);
+        withdrawButton.setOnAction(e -> {
+            // Show withdraw dialog
+            // Implement this
+        });
+
+        Button previousTransactionButton = new Button("Previous Transaction");
+        GridPane.setConstraints(previousTransactionButton, 0, 5);
+        previousTransactionButton.setOnAction(e -> {
+            showPreviousTransaction();
+        });
+
+        Button exitButton = new Button("Exit");
+        GridPane.setConstraints(exitButton, 0, 6);
+        exitButton.setOnAction(e -> {
+            primaryStage.close();
+        });
+
+        grid.getChildren().addAll(nameLabel, idLabel, checkBalanceButton, depositButton, withdrawButton, previousTransactionButton, exitButton);
+
+        Scene scene = new Scene(grid, 300, 250);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void showBalance() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Balance");
+        alert.setHeaderText(null);
+        alert.setContentText("Balance is: " + bank1.balance);
+        alert.showAndWait();
+    }
+
+    private void showPreviousTransaction() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Previous Transaction");
+        alert.setHeaderText(null);
+        if (bank1.previousTransaction > 0) {
+            alert.setContentText("Deposited: " + bank1.previousTransaction);
+        } else if (bank1.previousTransaction < 0) {
+            alert.setContentText("Withdrawn: " + Math.abs(bank1.previousTransaction));
+        } else {
+            alert.setContentText("No transaction has occurred!");
+        }
+        alert.showAndWait();
+    }
+
+    class BankAccount {
+        int balance;
+        int previousTransaction;
+        String customerName;
+        String customerId;
+
+        BankAccount(String customerNameString, String customerIdString) {
+            customerName = customerNameString;
+            customerId = customerIdString;
+        }
+
+        void deposit(int amount) {
+            if (amount != 0) {
+                balance = balance + amount;
+                previousTransaction = amount;
+            }
+        }
+
+        void withdraw(int amount) {
+            if (amount != 0) {
+                balance = balance - amount;
+                previousTransaction = -amount;
+            }
+        }
+    }
+}
